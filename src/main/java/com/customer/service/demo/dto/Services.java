@@ -2,8 +2,18 @@ package com.customer.service.demo.dto;
 
 public class Services {
 
+    private int serviceId;
     private String serviceName;
-    private String ServicesDescription;
+    private String servicesDescription;
+
+
+    public int getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
+    }
 
     public String getServiceName() {
         return serviceName;
@@ -14,18 +24,19 @@ public class Services {
     }
 
     public String getServicesDescription() {
-        return ServicesDescription;
+        return servicesDescription;
     }
 
     public void setServicesDescription(String servicesDescription) {
-        ServicesDescription = servicesDescription;
+        this.servicesDescription = servicesDescription;
     }
 
     @Override
     public String toString() {
         return "Services{" +
-                "serviceName='" + serviceName + '\'' +
-                ", ServicesDescription='" + ServicesDescription + '\'' +
+                "serviceId=" + serviceId +
+                ", serviceName='" + serviceName + '\'' +
+                ", servicesDescription='" + servicesDescription + '\'' +
                 '}';
     }
 }
