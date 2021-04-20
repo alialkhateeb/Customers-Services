@@ -2,6 +2,7 @@ package com.customer.service.demo.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,10 +21,10 @@ public class Customer {
     private String lastName;
 
     @Column(name = "birthday")
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "created_date")
-    private Timestamp createdDate;
+    private Date createdDate;
 
     public int getCustomerId() {
         return customerId;
@@ -49,19 +50,34 @@ public class Customer {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 
-    public Timestamp getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+
+        Customer customer = (Customer) o;
+
+        return customerId == customer.customerId;
+    }
+
+    @Override
+    public int hashCode() {
+        return customerId;
     }
 }
