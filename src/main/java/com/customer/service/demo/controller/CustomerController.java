@@ -22,23 +22,23 @@ public class CustomerController {
 
     }
 
-    @PutMapping("/update/{customerid}")
-    public void updateCustomer(@PathVariable("customerid") int customerId ,@RequestBody Customer customer) {
-        this.customerService.updateCustomer(customerId, customer);
-    }
-
-    @GetMapping("/get/customer/{customerid}")
+    @GetMapping("/get/{customerid}")
     public Customer getCustomer(@PathVariable("customerid") int customerId) {
         return this.customerService.getCustomer(customerId);
+
     }
 
-    @GetMapping("/get/customers")
+    @GetMapping("/get/all")
     public List<Customer> getCustomers() {
-
         return this.customerService.getCustomers();
     }
 
-    @DeleteMapping("/delete/{customerId}")
+    @PutMapping("/update/{customerid}")
+    public void updateCustomer(@PathVariable("customerid") int customerId, @RequestBody Customer customer) {
+        this.customerService.updateCustomer(customerId, customer);
+    }
+
+    @DeleteMapping("/delete/{customerid}")
     public void deleteCustomer(@PathVariable("customerid") int customerId) {
         this.customerService.deleteCustomer(customerId);
     }

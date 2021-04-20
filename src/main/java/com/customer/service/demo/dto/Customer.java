@@ -3,9 +3,19 @@ package com.customer.service.demo.dto;
 import java.time.LocalDate;
 
 public class Customer {
+
+    private int customerId;
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -34,7 +44,8 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-                "firstName='" + firstName + '\'' +
+                "customerId=" + customerId +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 '}';
