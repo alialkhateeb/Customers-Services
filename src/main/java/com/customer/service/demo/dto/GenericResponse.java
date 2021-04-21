@@ -21,6 +21,10 @@ public class GenericResponse {
         timestamp = new Timestamp(System.currentTimeMillis());
     }
 
+    public HttpStatus getStatus() {
+        return status;
+    }
+
     public int getStatusNumber() {
         return statusNumber;
     }
@@ -31,10 +35,6 @@ public class GenericResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 
     public void setStatus(HttpStatus status) {
