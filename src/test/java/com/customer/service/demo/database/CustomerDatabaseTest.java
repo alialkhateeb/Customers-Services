@@ -1,6 +1,6 @@
 package com.customer.service.demo.database;
 
-import com.customer.service.demo.entity.Customer;
+import com.customer.service.demo.entity.CustomerEntity;
 import com.customer.service.demo.repository.CustomerRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +25,12 @@ public class CustomerDatabaseTest {
     @Autowired
     private CustomerRepository customerRepository;
 
-
     @Test
     public void add_new_customer() {
-        Customer customer = generateCustomerObject("add new customer", "adding new customer to db",
+        CustomerEntity customerEntity = generateCustomerObject("add new customer", "adding new customer to db",
                 LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
         try {
-            this.customerRepository.save(customer);
+            this.customerRepository.save(customerEntity);
             assertTrue(true);
         } catch (Exception e) {
             fail(e.getMessage());
@@ -40,15 +39,15 @@ public class CustomerDatabaseTest {
 
     @Test
     public void update_customer() {
-        Customer customer = generateCustomerObject("update customer", "create new customer and retrieve db and update it",
+        CustomerEntity customerEntity = generateCustomerObject("update customer", "create new customer and retrieve db and update it",
                 LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
 
         try {
-            this.customerRepository.save(customer);
+            this.customerRepository.save(customerEntity);
         } catch (Exception e) {
             fail(e.getMessage());
         }
-        Optional<Customer> customerUpdate = this.customerRepository.findById(customer.getCustomerId());
+        Optional<CustomerEntity> customerUpdate = this.customerRepository.findById(customerEntity.getCustomerId());
         customerUpdate.ifPresent(cust -> {
             cust.setFirstName("update customer 2");
             cust.setLastName("update createdasdf asdf afdafd asdf");
@@ -69,9 +68,9 @@ public class CustomerDatabaseTest {
     public void get_customers() {
         add_new_customer();
         update_customer();
-        List<Customer> customers = this.customerRepository.findAll();
+        List<CustomerEntity> customerEntities = this.customerRepository.findAll();
         //assert that customers should contain something in the list
-        if (customers.size() > 0){
+        if (customerEntities.size() > 0){
             assertTrue("there are some customers in the list", true);
         }else {
             fail("there should be some customer");
@@ -81,17 +80,17 @@ public class CustomerDatabaseTest {
 
     @Test
     public void get_customer() {
-        Customer customer = generateCustomerObject("get customer", "create customer and get it",
+        CustomerEntity customerEntity = generateCustomerObject("get customer", "create customer and get it",
                 LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
         try {
-            this.customerRepository.save(customer);
+            this.customerRepository.save(customerEntity);
         } catch (Exception e) {
             //assert error
             fail("fail to add customer");
         }
 
-        Optional<Customer> retrieveCustomer = this.customerRepository.findById(customer.getCustomerId());
-        if (retrieveCustomer.isPresent() && retrieveCustomer.get().equals(customer)) {
+        Optional<CustomerEntity> retrieveCustomer = this.customerRepository.findById(customerEntity.getCustomerId());
+        if (retrieveCustomer.isPresent() && retrieveCustomer.get().equals(customerEntity)) {
             assertTrue("retrieved customer in db equal to created customer", true);
         } else {
             //assert false
@@ -101,21 +100,21 @@ public class CustomerDatabaseTest {
 
     @Test
     public void delete_customer() {
-        Optional<Customer> retrieveCustomer;
-        Customer customer = generateCustomerObject("delete customer", "delete customer and check if it was deleted",
+        Optional<CustomerEntity> retrieveCustomer;
+        CustomerEntity customerEntity = generateCustomerObject("delete customer", "delete customer and check if it was deleted",
                 LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
 
         try {
-            this.customerRepository.save(customer);
-            retrieveCustomer = this.customerRepository.findById(customer.getCustomerId());
+            this.customerRepository.save(customerEntity);
+            retrieveCustomer = this.customerRepository.findById(customerEntity.getCustomerId());
             retrieveCustomer.ifPresent(value -> {
-                this.customerRepository.deleteById(customer.getCustomerId());
+                this.customerRepository.deleteById(customerEntity.getCustomerId());
             });
         } catch (Exception e) {
             //assert error
             System.err.println("exception happen");
         }
-        retrieveCustomer = this.customerRepository.findById(customer.getCustomerId());
+        retrieveCustomer = this.customerRepository.findById(customerEntity.getCustomerId());
         retrieveCustomer.ifPresentOrElse((exised) -> {
                     assertTrue("user should not be found here", false);
                 },
@@ -125,13 +124,13 @@ public class CustomerDatabaseTest {
 
     }
 
-    private Customer generateCustomerObject(String firstName, String lastName, LocalDate birthday, Date createdDate) {
-        Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setBirthday(birthday);
-        customer.setCreatedDate(createdDate);
-        return customer;
+    private CustomerEntity generateCustomerObject(String firstName, String lastName, LocalDate birthday, Date createdDate) {
+        CustomerEntity customerEntity = new CustomerEntity();
+        customerEntity.setFirstName(firstName);
+        customerEntity.setLastName(lastName);
+        customerEntity.setBirthday(birthday);
+        customerEntity.setCreatedDate(createdDate);
+        return customerEntity;
     }
 
 

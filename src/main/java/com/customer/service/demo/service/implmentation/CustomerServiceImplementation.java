@@ -1,36 +1,125 @@
 package com.customer.service.demo.service.implmentation;
 
 import com.customer.service.demo.dto.Customer;
+import com.customer.service.demo.dto.GenericResponse;
+import com.customer.service.demo.entity.CustomerEntity;
+import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImplementation implements CustomerService {
 
+    private final CustomerRepository customerRepository;
+    private static final Logger LOGS = LoggerFactory.getLogger(CustomerServiceImplementation.class);
+
+
+    public CustomerServiceImplementation(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+
     @Override
-    public void createCustomer(Customer customer) {
+    public GenericResponse createCustomer(Customer customer) {
+
+        CustomerEntity customerEntity = createCustomerEntity(customer);
+        try {
+            this.customerRepository.save(customerEntity);
+            return new GenericResponse("customer has been stored in db", HttpStatus.CREATED);
+        } catch (Exception e) {
+            LOGS.error("error creating customer");
+            LOGS.error(e.getMessage());
+            return new GenericResponse("Issue occured while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
 
     }
 
     @Override
-    public void updateCustomer(int customerId, Customer customer) {
-
+    public GenericResponse updateCustomer(int customerId, Customer customer) {
+        Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
+        if (customerOptional.isPresent()) {
+            CustomerEntity customerEntity = customerOptional.get();
+            customerEntity.setFirstName(customer.getFirstName());
+            customerEntity.setLastName(customer.getLastName());
+            customerEntity.setBirthday(customer.getDateOfBirth());
+            try {
+                this.customerRepository.save(customerEntity);
+                return new GenericResponse("customer has been updated and stored in db", HttpStatus.CREATED);
+            } catch (Exception e) {
+                LOGS.error("error updating customer");
+                LOGS.error(e.getMessage());
+                return new GenericResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
     public Customer getCustomer(int customerId) {
-        return null;
+        //create entity to hold dto and return it with the response
+        Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
+
+        if (customerOptional.isPresent()) {
+            CustomerEntity customerEntity = customerOptional.get();
+            Customer customer = new Customer();
+            customer.setFirstName(customerEntity.getFirstName());
+            customer.setLastName(customerEntity.getLastName());
+            customer.setDateOfBirth(customerEntity.getBirthday());
+            customer.setCustomerId(customerEntity.getCustomerId());
+            return customer;
+        } else {
+            LOGS.info("customer with this id" + customerId + "does not exist");
+            return null;
+        }
+
     }
 
     @Override
     public List<Customer> getCustomers() {
-        return null;
+        List<Customer> customers = this.customerRepository.findAll().stream().map(value -> {
+            Customer customer = new Customer();
+            customer.setFirstName(value.getFirstName());
+            customer.setLastName(value.getLastName());
+            customer.setDateOfBirth(value.getBirthday());
+            customer.setCustomerId(value.getCustomerId());
+            return customer;
+        }).collect(Collectors.toList());
+        return customers;
     }
 
     @Override
-    public void deleteCustomer(int customerId) {
+    public GenericResponse deleteCustomer(int customerId) {
+        GenericResponse response = null;
+        try {
+            this.customerRepository.deleteById(customerId);
+            return new GenericResponse("customer has been deleted", HttpStatus.NO_CONTENT);
+        } catch (IllegalArgumentException e) {
+            LOGS.error("error deleting customer");
+            LOGS.error(e.getMessage());
+            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            LOGS.error("error deleting customer 2");
+            LOGS.error(e.getMessage());
+            return new GenericResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    private CustomerEntity createCustomerEntity(Customer customer) {
+        CustomerEntity customerEntity = new CustomerEntity();
+        customerEntity.setFirstName(customer.getFirstName());
+        customerEntity.setLastName(customer.getLastName());
+        customerEntity.setBirthday(customer.getDateOfBirth());
+        customerEntity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        return customerEntity;
     }
 }

@@ -1,13 +1,12 @@
 package com.customer.service.demo.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Table(name = "customer")
-public class Customer {
+public class CustomerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,11 +68,11 @@ public class Customer {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Customer)) return false;
+        if (!(o instanceof CustomerEntity)) return false;
 
-        Customer customer = (Customer) o;
+        CustomerEntity customerEntity = (CustomerEntity) o;
 
-        return customerId == customer.customerId;
+        return customerId == customerEntity.customerId;
     }
 
     @Override

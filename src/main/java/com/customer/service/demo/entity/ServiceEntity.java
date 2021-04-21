@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "service")
-public class Service {
+public class ServiceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,11 +68,11 @@ public class Service {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Service)) return false;
+        if (!(o instanceof ServiceEntity)) return false;
 
-        Service service = (Service) o;
+        ServiceEntity serviceEntity = (ServiceEntity) o;
 
-        return serviceId == service.serviceId;
+        return serviceId == serviceEntity.serviceId;
     }
 
     @Override

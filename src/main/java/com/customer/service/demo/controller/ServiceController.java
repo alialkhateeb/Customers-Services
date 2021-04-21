@@ -1,8 +1,10 @@
 package com.customer.service.demo.controller;
 
-import com.customer.service.demo.dto.Customer;
+import com.customer.service.demo.dto.GenericResponse;
 import com.customer.service.demo.dto.Services;
 import com.customer.service.demo.service.ServicesService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,33 +20,39 @@ public class ServiceController {
     }
 
     @PostMapping("/create/{customerid}")
-    public void createServiceForCustomer(@PathVariable("customerid")  int customerId, @RequestBody Services service) {
-        System.out.println("customer id = " + customerId);
-        System.out.println("services  = " + service);
+    public ResponseEntity<GenericResponse> createServiceForCustomer(@PathVariable("customerid") int customerId, @RequestBody Services service) {
+        GenericResponse response = this.servicesService.createService(service, customerId);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<GenericResponse> createServiceForCustomer(@RequestBody Services service) {
+        GenericResponse response = this.servicesService.createService(service);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
     @GetMapping("/get-services/{customerid}")
-    public List<Services> viewServicesForCustomer(@PathVariable("customerid") int customerId){
-        System.out.println("customer id = " + customerId);
-        return null;
+    public ResponseEntity<List<Services>> viewServicesForCustomer(@PathVariable("customerid") int customerId) {
+        List<Services> services = this.servicesService.getServices(customerId);
+        return new ResponseEntity<List<Services>>(services, HttpStatus.OK);
     }
 
     @GetMapping("/get-services")
-    public List<Services> viewAllServices(){
-        System.out.println("get all services...");
-        return null;
+    public ResponseEntity<List<Services>> viewAllServices() {
+        List<Services> services = this.servicesService.getServices();
+        return new ResponseEntity<List<Services>>(services, HttpStatus.OK);
     }
 
     @PutMapping("/update/{serviceid}")
-    public void updateService(@PathVariable("serviceid") int serviceId, @RequestBody Services services){
-        System.out.println("service Id = " + serviceId);
-        System.out.println(services);
+    public ResponseEntity<GenericResponse> updateService(@PathVariable("serviceid") Integer serviceId, @RequestBody Services service) {
+        GenericResponse response = this.servicesService.updateService(serviceId, service);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
     @DeleteMapping("/delete/{serviceid}")
-    public void deleteService(@PathVariable("serviceid") int serviceId){
-        System.out.println("service Id = " + serviceId);
-
+    public ResponseEntity<GenericResponse> deleteService(@PathVariable("serviceid") int serviceId) {
+        GenericResponse response = this.servicesService.deleteService(serviceId);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
 }
