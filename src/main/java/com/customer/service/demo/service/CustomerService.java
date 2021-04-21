@@ -11,9 +11,10 @@ public interface CustomerService {
 
     GenericResponse updateCustomer(int customerId, Customer customer);
 
-    Customer getCustomer(int customerId);
+    GenericResponse getCustomer(int customerId);
 
-    List<Customer> getCustomers();
+
+    GenericResponse<List<Customer>> getCustomers();
 
     GenericResponse deleteCustomer(int customerId);
 }

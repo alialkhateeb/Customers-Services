@@ -1,7 +1,9 @@
 package com.customer.service.demo.controller;
 
 import com.customer.service.demo.dto.Customer;
+import com.customer.service.demo.dto.GenericResponse;
 import com.customer.service.demo.service.CustomerService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,29 +19,34 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public void createCustomer(@RequestBody Customer customer) {
-        this.customerService.createCustomer(customer);
+    public ResponseEntity<GenericResponse> createCustomer(@RequestBody Customer customer) {
+        GenericResponse response = this.customerService.createCustomer(customer);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
 
     }
 
     @GetMapping("/get/{customerid}")
-    public Customer getCustomer(@PathVariable("customerid") int customerId) {
-        return this.customerService.getCustomer(customerId);
-
+    public ResponseEntity<GenericResponse> getCustomer(@PathVariable("customerid") int customerId) {
+        GenericResponse response = this.customerService.getCustomer(customerId);
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
     @GetMapping("/get/all")
-    public List<Customer> getCustomers() {
-        return this.customerService.getCustomers();
+    public ResponseEntity<GenericResponse> getCustomers() {
+        GenericResponse response = this.customerService.getCustomers();
+        return new ResponseEntity<>(response, response.getStatus());
+
     }
 
     @PutMapping("/update/{customerid}")
-    public void updateCustomer(@PathVariable("customerid") int customerId, @RequestBody Customer customer) {
-        this.customerService.updateCustomer(customerId, customer);
+    public ResponseEntity<GenericResponse> updateCustomer(@PathVariable("customerid") int customerId, @RequestBody Customer customer) {
+        GenericResponse response = this.customerService.updateCustomer(customerId, customer);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
     @DeleteMapping("/delete/{customerid}")
-    public void deleteCustomer(@PathVariable("customerid") int customerId) {
-        this.customerService.deleteCustomer(customerId);
+    public ResponseEntity<GenericResponse> deleteCustomer(@PathVariable("customerid") int customerId) {
+        GenericResponse response = this.customerService.deleteCustomer(customerId);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 }

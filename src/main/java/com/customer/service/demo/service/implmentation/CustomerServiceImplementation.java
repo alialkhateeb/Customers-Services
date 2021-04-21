@@ -65,7 +65,7 @@ public class CustomerServiceImplementation implements CustomerService {
     }
 
     @Override
-    public Customer getCustomer(int customerId) {
+    public GenericResponse getCustomer(int customerId) {
         //create entity to hold dto and return it with the response
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
 
@@ -76,16 +76,16 @@ public class CustomerServiceImplementation implements CustomerService {
             customer.setLastName(customerEntity.getLastName());
             customer.setDateOfBirth(customerEntity.getBirthday());
             customer.setCustomerId(customerEntity.getCustomerId());
-            return customer;
+            return new GenericResponse("customer successfully retrieved", HttpStatus.OK, customer);
         } else {
             LOGS.info("customer with this id" + customerId + "does not exist");
-            return null;
+            return new GenericResponse("invalid user id", HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @Override
-    public List<Customer> getCustomers() {
+    public GenericResponse<List<Customer>> getCustomers() {
         List<Customer> customers = this.customerRepository.findAll().stream().map(value -> {
             Customer customer = new Customer();
             customer.setFirstName(value.getFirstName());
@@ -94,7 +94,7 @@ public class CustomerServiceImplementation implements CustomerService {
             customer.setCustomerId(value.getCustomerId());
             return customer;
         }).collect(Collectors.toList());
-        return customers;
+        return new GenericResponse<List<Customer>>("", HttpStatus.OK, customers);
     }
 
     @Override
