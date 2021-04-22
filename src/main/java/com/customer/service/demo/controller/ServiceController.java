@@ -32,15 +32,15 @@ public class ServiceController {
     }
 
     @GetMapping("/get-services/{customerid}")
-    public ResponseEntity<List<Services>> viewServicesForCustomer(@PathVariable("customerid") int customerId) {
-        List<Services> services = this.servicesService.getServices(customerId);
-        return new ResponseEntity<List<Services>>(services, HttpStatus.OK);
+    public ResponseEntity<GenericResponse<List<Services>>> viewServicesForCustomer(@PathVariable("customerid") int customerId) {
+        GenericResponse<List<Services>> services = this.servicesService.getServices(customerId);
+        return new ResponseEntity<GenericResponse<List<Services>>>(services, HttpStatus.OK);
     }
 
     @GetMapping("/get-services")
-    public ResponseEntity<List<Services>> viewAllServices() {
-        List<Services> services = this.servicesService.getServices();
-        return new ResponseEntity<List<Services>>(services, HttpStatus.OK);
+    public ResponseEntity<GenericResponse<List<Services>>> viewAllServices() {
+        GenericResponse<List<Services>> services = this.servicesService.getServices();
+        return new ResponseEntity<GenericResponse<List<Services>>>(services, HttpStatus.OK);
     }
 
     @PutMapping("/update/{serviceid}")

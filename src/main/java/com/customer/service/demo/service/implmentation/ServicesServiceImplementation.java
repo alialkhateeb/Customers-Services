@@ -2,11 +2,14 @@ package com.customer.service.demo.service.implmentation;
 
 import com.customer.service.demo.dto.GenericResponse;
 import com.customer.service.demo.dto.Services;
+import com.customer.service.demo.entity.CustomerEntity;
 import com.customer.service.demo.entity.ServiceEntity;
+import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.repository.ServiceRepository;
 import com.customer.service.demo.service.ServicesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +23,12 @@ import java.util.stream.Collectors;
 public class ServicesServiceImplementation implements ServicesService {
 
     private final ServiceRepository serviceRepository;
+    private final CustomerRepository customerRepository;
     private static final Logger LOGS = LoggerFactory.getLogger(ServicesServiceImplementation.class);
 
-    public ServicesServiceImplementation(ServiceRepository serviceRepository) {
+    public ServicesServiceImplementation(ServiceRepository serviceRepository, CustomerRepository customerRepository) {
         this.serviceRepository = serviceRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -41,16 +46,22 @@ public class ServicesServiceImplementation implements ServicesService {
 
     @Override
     public GenericResponse<Services> createService(Services service, int customerId) {
-        ServiceEntity serviceEntity = generateServiceEntity(service);
-        serviceEntity.setCustomerId(customerId);
-        try {
-            this.serviceRepository.save(serviceEntity);
-            return new GenericResponse("service has been created and stored in db", HttpStatus.CREATED);
-        } catch (Exception e) {
-            LOGS.error("error creating customer");
-            LOGS.error(e.getMessage());
-            return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
+        Optional<CustomerEntity> customerEntity = this.customerRepository.findById(customerId);
+        if (customerEntity.isPresent()){
+            ServiceEntity serviceEntity = generateServiceEntity(service);
+            serviceEntity.setCustomerId(customerId);
+            try {
+                this.serviceRepository.save(serviceEntity);
+                return new GenericResponse("service has been created and stored in db", HttpStatus.CREATED);
+            } catch (Exception e) {
+                LOGS.error("error creating customer");
+                LOGS.error(e.getMessage());
+                return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }else{
+            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @Override
@@ -104,7 +115,7 @@ public class ServicesServiceImplementation implements ServicesService {
         try {
             this.serviceRepository.deleteById(serviceId);
             return new GenericResponse("service has been deleted from db", HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
+        } catch (EmptyResultDataAccessException e) {
             return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             LOGS.error("error deleting service");

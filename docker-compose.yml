@@ -1,17 +1,18 @@
 version: "3.0"
 services:
   elm-mysql:
-    image: mysql
+    image: elm-mysql
     container_name: elm-mysql
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: elm123
-      MYSQL_DATABASE: customer_service
   elm-test:
     container_name: elm-test
-    image: elm-test-3
+    image: elm-spring
     restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
     ports:
     - 8080:8080

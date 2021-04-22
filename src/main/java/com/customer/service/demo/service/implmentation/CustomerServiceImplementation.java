@@ -7,6 +7,7 @@ import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -103,7 +104,7 @@ public class CustomerServiceImplementation implements CustomerService {
         try {
             this.customerRepository.deleteById(customerId);
             return new GenericResponse("customer has been deleted", HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
+        } catch (EmptyResultDataAccessException e) {
             LOGS.error("error deleting customer");
             LOGS.error(e.getMessage());
             return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
