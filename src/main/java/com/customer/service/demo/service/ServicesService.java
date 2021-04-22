@@ -7,16 +7,18 @@ import java.util.List;
 
 public interface ServicesService {
 
-    GenericResponse createService(Services service);
+    GenericResponse<Services> createService(Services service);
 
-    GenericResponse createService(Services service, int customerId);
+    GenericResponse<Services> createService(Services service, int customerId);
 
-    List<Services> getServices();
 
-    List<Services> getServices(int customerId);
 
-    GenericResponse updateService(int serviceId, Services service);
+    GenericResponse<List<Services>> getServices();
 
-    GenericResponse deleteService(int serviceId);
+    GenericResponse<List<Services>> getServices(int customerId);
+
+    GenericResponse<Services> updateService(int serviceId, Services service);
+
+    GenericResponse<Services> deleteService(int serviceId);
 
 }

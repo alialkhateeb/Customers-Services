@@ -7,14 +7,13 @@ import java.util.List;
 
 public interface CustomerService {
 
-    GenericResponse createCustomer(Customer customer);
+    GenericResponse<Customer> createCustomer(Customer customer);
 
-    GenericResponse updateCustomer(int customerId, Customer customer);
+    GenericResponse<Customer> updateCustomer(int customerId, Customer customer);
 
-    GenericResponse getCustomer(int customerId);
-
+    GenericResponse<Customer> getCustomer(int customerId);
 
     GenericResponse<List<Customer>> getCustomers();
 
-    GenericResponse deleteCustomer(int customerId);
+    GenericResponse<Customer> deleteCustomer(int customerId);
 }

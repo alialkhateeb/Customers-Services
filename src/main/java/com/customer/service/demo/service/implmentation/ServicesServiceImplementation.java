@@ -27,7 +27,7 @@ public class ServicesServiceImplementation implements ServicesService {
     }
 
     @Override
-    public GenericResponse createService(Services service) {
+    public GenericResponse<Services> createService(Services service) {
         ServiceEntity serviceEntity = generateServiceEntity(service);
         try {
             this.serviceRepository.save(serviceEntity);
@@ -40,7 +40,7 @@ public class ServicesServiceImplementation implements ServicesService {
     }
 
     @Override
-    public GenericResponse createService(Services service, int customerId) {
+    public GenericResponse<Services> createService(Services service, int customerId) {
         ServiceEntity serviceEntity = generateServiceEntity(service);
         serviceEntity.setCustomerId(customerId);
         try {
@@ -54,7 +54,7 @@ public class ServicesServiceImplementation implements ServicesService {
     }
 
     @Override
-    public List<Services> getServices() {
+    public GenericResponse<List<Services>> getServices() {
         List<Services> services = this.serviceRepository.findAll().stream().map(value -> {
             Services service = new Services();
             service.setServiceId(value.getServiceId());
@@ -62,11 +62,12 @@ public class ServicesServiceImplementation implements ServicesService {
             service.setServicesDescription(value.getServiceDescription());
             return service;
         }).collect(Collectors.toList());
-        return services;
+        return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
+
     }
 
     @Override
-    public List<Services> getServices(int customerId) {
+    public GenericResponse<List<Services>> getServices(int customerId) {
         List<Services> servicesList = this.serviceRepository.findAllServicesByCustomerId(customerId).stream().map(value -> {
             Services service = new Services();
             service.setServiceId(value.getServiceId());
@@ -74,11 +75,12 @@ public class ServicesServiceImplementation implements ServicesService {
             service.setServicesDescription(value.getServiceDescription());
             return service;
         }).collect(Collectors.toList());
-        return servicesList;
+        return new GenericResponse<List<Services>>("", HttpStatus.OK, servicesList);
+
     }
 
     @Override
-    public GenericResponse updateService(int serviceId, Services service) {
+    public GenericResponse<Services> updateService(int serviceId, Services service) {
         Optional<ServiceEntity> serviceEntity = this.serviceRepository.findById(serviceId);
         if (serviceEntity.isPresent()){
             ServiceEntity value = serviceEntity.get();
@@ -98,7 +100,7 @@ public class ServicesServiceImplementation implements ServicesService {
     }
 
     @Override
-    public GenericResponse deleteService(int serviceId) {
+    public GenericResponse<Services> deleteService(int serviceId) {
         try {
             this.serviceRepository.deleteById(serviceId);
             return new GenericResponse("service has been deleted from db", HttpStatus.ACCEPTED);
