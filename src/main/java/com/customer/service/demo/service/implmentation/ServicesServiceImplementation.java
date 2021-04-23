@@ -45,67 +45,29 @@ public class ServicesServiceImplementation implements ServicesService {
     }
 
     @Override
-    public GenericResponse<Services> createService(Services service, int customerId) {
-        Optional<CustomerEntity> customerEntity = this.customerRepository.findById(customerId);
-        if (customerEntity.isPresent()){
-            ServiceEntity serviceEntity = generateServiceEntity(service);
-            serviceEntity.setCustomerId(customerId);
-            try {
-                this.serviceRepository.save(serviceEntity);
-                return new GenericResponse("service has been created and stored in db", HttpStatus.CREATED);
-            } catch (Exception e) {
-                LOGS.error("error creating customer");
-                LOGS.error(e.getMessage());
-                return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }else{
-            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    @Override
     public GenericResponse<List<Services>> getServices() {
-        List<Services> services = this.serviceRepository.findAll().stream().map(value -> {
-            Services service = new Services();
-            service.setServiceId(value.getServiceId());
-            service.setServiceName(value.getServiceName());
-            service.setServicesDescription(value.getServiceDescription());
-            return service;
-        }).collect(Collectors.toList());
+        List<Services> services = this.serviceRepository.findAll() .stream()
+                .map(value -> new Services(value.getServiceId(), value.getServiceName(), value.getServiceDescription()))
+                .collect(Collectors.toList());
         return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
-
-    }
-
-    @Override
-    public GenericResponse<List<Services>> getServices(int customerId) {
-        List<Services> servicesList = this.serviceRepository.findAllServicesByCustomerId(customerId).stream().map(value -> {
-            Services service = new Services();
-            service.setServiceId(value.getServiceId());
-            service.setServiceName(value.getServiceName());
-            service.setServicesDescription(value.getServiceDescription());
-            return service;
-        }).collect(Collectors.toList());
-        return new GenericResponse<List<Services>>("", HttpStatus.OK, servicesList);
-
     }
 
     @Override
     public GenericResponse<Services> updateService(int serviceId, Services service) {
         Optional<ServiceEntity> serviceEntity = this.serviceRepository.findById(serviceId);
-        if (serviceEntity.isPresent()){
+        if (serviceEntity.isPresent()) {
             ServiceEntity value = serviceEntity.get();
             value.setServiceName(service.getServiceName());
             value.setServiceDescription(service.getServicesDescription());
             try {
                 this.serviceRepository.save(value);
                 return new GenericResponse("service has been updated and stored in db", HttpStatus.CREATED);
-            }catch (Exception e){
+            } catch (Exception e) {
                 LOGS.error("error updating service");
                 LOGS.error(e.getMessage());
                 return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        }else{
+        } else {
             return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
         }
     }
@@ -117,11 +79,38 @@ public class ServicesServiceImplementation implements ServicesService {
             return new GenericResponse("service has been deleted from db", HttpStatus.ACCEPTED);
         } catch (EmptyResultDataAccessException e) {
             return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGS.error("error deleting service");
             LOGS.error(e.getMessage());
             return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public GenericResponse<List<Services>> getCustomerServices(int customerId) {
+        Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
+        if (customerOptional.isPresent()) {
+            CustomerEntity customer = customerOptional.get();
+            List<Services> services = customer.getServices().stream()
+                    .map(value -> new Services(value.getServiceId(), value.getServiceName(), value.getServiceDescription()))
+                    .collect(Collectors.toList());
+            return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
+        }
+
+        return new GenericResponse<List<Services>>("please check your customer/service id", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public GenericResponse<Services> addServiceToCustomer(int serviceId, int customerId) {
+        Optional<ServiceEntity> serviceOptional = this.serviceRepository.findById(serviceId);
+        Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
+        if (customerOptional.isPresent() && serviceOptional.isPresent()) {
+            CustomerEntity customer = customerOptional.get();
+            customer.getServices().add(serviceOptional.get());
+            this.customerRepository.save(customer);
+            return new GenericResponse<Services>("service has been added to customer", HttpStatus.ACCEPTED);
+        }
+        return new GenericResponse<Services>("please check your customer/service id", HttpStatus.BAD_REQUEST);
     }
 
     private ServiceEntity generateServiceEntity(Services service) {
@@ -131,4 +120,5 @@ public class ServicesServiceImplementation implements ServicesService {
         serviceEntity.setServiceCreated(new Timestamp(System.currentTimeMillis()));
         return serviceEntity;
     }
+
 }

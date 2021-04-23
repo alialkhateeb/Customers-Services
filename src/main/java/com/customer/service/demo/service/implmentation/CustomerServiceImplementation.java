@@ -100,7 +100,6 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public GenericResponse deleteCustomer(int customerId) {
-        GenericResponse response = null;
         try {
             this.customerRepository.deleteById(customerId);
             return new GenericResponse("customer has been deleted", HttpStatus.NO_CONTENT);

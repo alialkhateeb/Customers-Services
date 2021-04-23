@@ -10,6 +10,4 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends JpaRepository<ServiceEntity, Integer> {
 
-    @Query(value = "SELECT * FROM service WHERE customer_foreign = :customerId", nativeQuery = true)
-    List<ServiceEntity> findAllServicesByCustomerId(int customerId);
 }
