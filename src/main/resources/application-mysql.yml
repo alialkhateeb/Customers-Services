@@ -9,3 +9,6 @@ spring:
     user:
       name: elm
       password: SAeictcyguhpIDE9KayBGTGDkywaNR0Soph
+  jpa:
+    hibernate:
+      ddl-auto: update
