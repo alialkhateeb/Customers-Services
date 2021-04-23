@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost;databaseName=customer_service
+    username: elm
+    password: 123456
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  security:
+    user:
+      name: elm
+      password: SAeictcyguhpIDE9KayBGTGDkywaNR0Soph
+  jpa:
+    hibernate:
+      ddl-auto: update

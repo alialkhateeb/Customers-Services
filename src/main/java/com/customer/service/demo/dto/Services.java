@@ -6,6 +6,11 @@ public class Services {
     private String serviceName;
     private String servicesDescription;
 
+    public Services(int serviceId, String serviceName, String servicesDescription) {
+        this.serviceId = serviceId;
+        this.serviceName = serviceName;
+        this.servicesDescription = servicesDescription;
+    }
 
     public int getServiceId() {
         return serviceId;

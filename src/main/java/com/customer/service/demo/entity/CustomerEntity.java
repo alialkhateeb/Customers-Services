@@ -3,6 +3,7 @@ package com.customer.service.demo.entity;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -24,6 +25,12 @@ public class CustomerEntity {
 
     @Column(name = "created_date")
     private Date createdDate;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "customer_service", joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private List<ServiceEntity> services;
+
 
     public int getCustomerId() {
         return customerId;
@@ -63,6 +70,14 @@ public class CustomerEntity {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public List<ServiceEntity> getServices() {
+        return services;
+    }
+
+    public void setServices(List<ServiceEntity> services) {
+        this.services = services;
     }
 
     @Override

@@ -19,25 +19,13 @@ public class ServiceController {
         this.servicesService = servicesService;
     }
 
-    @PostMapping("/create/{customerid}")
-    public ResponseEntity<GenericResponse> createServiceForCustomer(@PathVariable("customerid") int customerId, @RequestBody Services service) {
-        GenericResponse response = this.servicesService.createService(service, customerId);
-        return new ResponseEntity<GenericResponse>(response, response.getStatus());
-    }
-
     @PostMapping("/create")
     public ResponseEntity<GenericResponse> createServiceForCustomer(@RequestBody Services service) {
         GenericResponse response = this.servicesService.createService(service);
         return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
-    @GetMapping("/get-services/{customerid}")
-    public ResponseEntity<GenericResponse<List<Services>>> viewServicesForCustomer(@PathVariable("customerid") int customerId) {
-        GenericResponse<List<Services>> services = this.servicesService.getServices(customerId);
-        return new ResponseEntity<GenericResponse<List<Services>>>(services, HttpStatus.OK);
-    }
-
-    @GetMapping("/get-services")
+    @GetMapping("/get/all")
     public ResponseEntity<GenericResponse<List<Services>>> viewAllServices() {
         GenericResponse<List<Services>> services = this.servicesService.getServices();
         return new ResponseEntity<GenericResponse<List<Services>>>(services, HttpStatus.OK);
@@ -55,4 +43,15 @@ public class ServiceController {
         return new ResponseEntity<GenericResponse>(response, response.getStatus());
     }
 
+    @GetMapping("/get/services/{customerid}")
+    public ResponseEntity<GenericResponse> getCustomerServices(@PathVariable("customerid") int customerId) {
+        GenericResponse response = this.servicesService.getCustomerServices(customerId);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
+    }
+
+    @PostMapping("/map/{serviceid}/{customerid}")
+    public ResponseEntity<GenericResponse> createServiceForCustomer(@PathVariable("serviceid") int serviceId, @PathVariable("customerid") int customerId) {
+        GenericResponse<Services> response = this.servicesService.addServiceToCustomer(serviceId, customerId);
+        return new ResponseEntity<GenericResponse>(response, response.getStatus());
+    }
 }

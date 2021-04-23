@@ -13,6 +13,6 @@ services:
     image: elm-spring
     restart: always
     environment:
-      - SPRING_PROFILES_ACTIVE=test
+      - SPRING_PROFILES_ACTIVE=mysql
     ports:
     - 8080:8080
