@@ -67,7 +67,6 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @Override
     public GenericResponse getCustomer(int customerId) {
-        //create entity to hold dto and return it with the response
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
 
         if (customerOptional.isPresent()) {
