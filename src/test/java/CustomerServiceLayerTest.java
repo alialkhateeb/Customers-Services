@@ -46,17 +46,6 @@ public class CustomerServiceLayerTest {
         Assertions.assertEquals(response.getStatus(), HttpStatus.CREATED);
     }
 
-    @Test
-    public void update_customer_using_service_layer(){
-        GenericResponse<Customer> response = customerService.updateCustomer(0, customer);
-        Assertions.assertEquals(response.getStatus(), HttpStatus.CREATED);
-    }
-
-    @Test
-    public void get_customer_using_service_layer(){
-        GenericResponse<Customer> response = customerService.getCustomer(0);
-        Assertions.assertEquals(response.getStatus(), HttpStatus.CREATED);
-    }
 
     @Test
     public void get_customers_using_service_layer(){
