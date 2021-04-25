@@ -1,5 +1,6 @@
 package com.customer.service.demo.controller;
 
+import com.customer.service.demo.dto.Map;
 import com.customer.service.demo.dto.Services;
 import com.customer.service.demo.dto.response.ResponseInterface;
 import com.customer.service.demo.service.ServicesService;
@@ -46,9 +47,9 @@ public class ServiceController {
         return new ResponseEntity<>(response, response.getStatus());
     }
 
-    @PostMapping("/map/{serviceid}/{customerid}")
-    public ResponseEntity<ResponseInterface> createServiceForCustomer(@PathVariable("serviceid") int serviceId, @PathVariable("customerid") int customerId) {
-        ResponseInterface response = this.servicesService.addServiceToCustomer(serviceId, customerId);
+    @PostMapping("/map")
+    public ResponseEntity<ResponseInterface> mapServiceToCustomer(@RequestBody Map map) {
+        ResponseInterface response = this.servicesService.addServiceToCustomer(map.getServiceId(), map.getCustomerId());
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

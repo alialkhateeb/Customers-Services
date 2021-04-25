@@ -2,7 +2,7 @@ package com.customer.service.demo.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "service")
@@ -25,7 +25,7 @@ public class ServiceEntity {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "customer_service", joinColumns = @JoinColumn(name = "service_id"),
             inverseJoinColumns = @JoinColumn(name = "customer_id"))
-    private List<CustomerEntity> customer;
+    private Set<CustomerEntity> customer;
 
     public int getServiceId() {
         return serviceId;
@@ -59,11 +59,11 @@ public class ServiceEntity {
         this.serviceCreated = serviceCreated;
     }
 
-    public List<CustomerEntity> getCustomer() {
+    public Set<CustomerEntity> getCustomer() {
         return customer;
     }
 
-    public void setCustomer(List<CustomerEntity> customer) {
+    public void setCustomer(Set<CustomerEntity> customer) {
         this.customer = customer;
     }
 
