@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
@@ -125,7 +126,7 @@ public class ServiceDatabaseTest {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findAll().stream().findAny();
         if (customerOptional.isPresent()) {
             CustomerEntity customer = customerOptional.get();
-            customer.setServices(services);
+            customer.setServices(services.stream().collect(Collectors.toSet()));
             try {
                 this.customerRepository.save(customer);
                 assertTrue("all services were added to a single customer", true);
@@ -145,7 +146,7 @@ public class ServiceDatabaseTest {
             if (value.getServices().size() > 0){
                 services.addAll(value.getServices());
             }else{
-                value.setServices(services);
+                value.setServices(services.stream().collect(Collectors.toSet()));
                 try {
                     this.customerRepository.save(value);
                 }catch (Exception e){

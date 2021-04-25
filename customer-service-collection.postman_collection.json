@@ -1,0 +1,439 @@
+{
+	"info": {
+		"_postman_id": "87a4e5a2-300f-4c3a-9a75-e22d4f33717d",
+		"name": "customer-service-collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "customer",
+			"item": [
+				{
+					"name": "url:8080/customer/create",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"ali new\",\r\n    \"lastName\" : \"alkhateeb new\",\r\n    \"dateOfBirth\" : \"2020-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/create/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"create",
+								""
+							]
+						},
+						"description": "the last value in route should have the customer id,\r\nuse the example provided in the body"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/customer/get/all",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/get/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"get",
+								"all"
+							]
+						},
+						"description": "this will get all the customer"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/customer/get/{customer id}",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/get/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"get",
+								"1"
+							]
+						},
+						"description": "provide customer id in the route to get the details"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/customer/update/{customer id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\" : \"ali update 1\",\r\n    \"lastName\" : \"alkhateeb update 1\",\r\n    \"dateOfBirth\" : \"2021-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"update",
+								"1"
+							]
+						},
+						"description": "this call will contain the body and require customer id to retrive it and update it"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/customer/delete/{customer id}",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"delete",
+								"1"
+							]
+						},
+						"description": "this will require customer id to delete it"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "service",
+			"item": [
+				{
+					"name": "url:8080/service/create/",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"serviceName\" : \"serivce 5\",\r\n    \"servicesDescription\" : \"this is service 5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/service/create/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"create",
+								""
+							]
+						},
+						"description": "this api will contain a body to send a request to the backend and create a service w/o customer"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/service/get/all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"serviceName\" : \"serivce 1\",\r\n    \"servicesDescription\" : \"this is service 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/service/get/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"get",
+								"all"
+							]
+						},
+						"description": "this api will get all the services"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/service/update/{service id}",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"serviceName\" : \"update service 1\",\r\n    \"servicesDescription\" : \"this is updating service 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/service/update/34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"update",
+								"34"
+							]
+						},
+						"description": "this api will take the body of a service and send it to the backend to update the values"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/service/delete/{service id}",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/service/delete/35",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"delete",
+								"35"
+							]
+						},
+						"description": "this service to delete a certin service"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/service/get/{customer id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/service/get/services/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"get",
+								"services",
+								"3"
+							]
+						},
+						"description": "this api will get all the services for a single customer"
+					},
+					"response": []
+				},
+				{
+					"name": "url:8080/service/map/",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "SAeictcyguhpIDE9KayBGTGDkywaNR0Soph",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "elm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customerId\": \"3\",\r\n    \"serviceId\": \"2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/service/map/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"service",
+								"map",
+								""
+							]
+						},
+						"description": "map a single service to a single customer using service id and customer id"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
