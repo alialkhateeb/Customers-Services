@@ -34,19 +34,19 @@ public class CustomerController {
     @GetMapping("/get/all")
     public ResponseEntity<GenericResponse<List<Customer>>> getCustomers(){
         GenericResponse<List<Customer>> response = this.customerService.getCustomers();
-        return new ResponseEntity<GenericResponse<List<Customer>>>(response, response.getStatus());
+        return new ResponseEntity<>(response, response.getStatus());
 
     }
 
     @PutMapping("/update/{customerid}")
-    public ResponseEntity<GenericResponse<Customer>> updateCustomer(@PathVariable("customerid") int customerId, @RequestBody Customer customer) {
+    public ResponseEntity<GenericResponse> updateCustomer(@PathVariable("customerid") int customerId, @RequestBody Customer customer) {
         GenericResponse<Customer> response = this.customerService.updateCustomer(customerId, customer);
-        return new ResponseEntity<GenericResponse<Customer>>(response, response.getStatus());
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
     @DeleteMapping("/delete/{customerid}")
     public ResponseEntity<GenericResponse> deleteCustomer(@PathVariable("customerid") int customerId) {
         GenericResponse<Customer> response = this.customerService.deleteCustomer(customerId);
-        return new ResponseEntity<GenericResponse>(response, response.getStatus());
+        return new ResponseEntity<>(response, response.getStatus());
     }
 }

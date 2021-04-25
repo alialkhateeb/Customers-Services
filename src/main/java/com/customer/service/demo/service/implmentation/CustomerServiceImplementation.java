@@ -7,6 +7,8 @@ import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class CustomerServiceImplementation implements CustomerService {
         this.customerRepository = customerRepository;
     }
 
-
+    @CacheEvict(value = {"customers"}, allEntries = true)
     @Override
     public GenericResponse createCustomer(Customer customer) {
 
@@ -44,6 +46,7 @@ public class CustomerServiceImplementation implements CustomerService {
 
     }
 
+    @CacheEvict(value = {"customer", "customers", "services-customer"}, key = "#customerId", allEntries = true)
     @Override
     public GenericResponse updateCustomer(int customerId, Customer customer) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
@@ -54,7 +57,7 @@ public class CustomerServiceImplementation implements CustomerService {
             customerEntity.setBirthday(customer.getDateOfBirth());
             try {
                 this.customerRepository.save(customerEntity);
-                return new GenericResponse("customer has been updated and stored in db", HttpStatus.CREATED);
+                return new GenericResponse("customer has been updated and stored in db", HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 LOGS.error("error updating customer");
                 LOGS.error(e.getMessage());
@@ -65,10 +68,10 @@ public class CustomerServiceImplementation implements CustomerService {
         }
     }
 
+    @Cacheable(value = "customer", key = "#customerId")
     @Override
     public GenericResponse getCustomer(int customerId) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
-
         if (customerOptional.isPresent()) {
             CustomerEntity customerEntity = customerOptional.get();
             Customer customer = new Customer();
@@ -84,6 +87,7 @@ public class CustomerServiceImplementation implements CustomerService {
 
     }
 
+    @Cacheable("customers")
     @Override
     public GenericResponse<List<Customer>> getCustomers() {
         List<Customer> customers = this.customerRepository.findAll().stream().map(value -> {
@@ -97,6 +101,7 @@ public class CustomerServiceImplementation implements CustomerService {
         return new GenericResponse<List<Customer>>("", HttpStatus.OK, customers);
     }
 
+    @CacheEvict(value = {"customer", "customers", "services-customer"}, key = "#customerId", allEntries = true)
     @Override
     public GenericResponse deleteCustomer(int customerId) {
         try {
