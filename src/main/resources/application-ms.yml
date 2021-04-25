@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost;databaseName=customer_service
-    username: elm
-    password: 123456
+    url: jdbc:sqlserver://elm-mssql;databaseName=customer_service
+    username: sa
+    password: 123QWEqwe
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   security:
