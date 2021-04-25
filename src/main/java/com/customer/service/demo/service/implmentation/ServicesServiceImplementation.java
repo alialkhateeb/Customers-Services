@@ -9,6 +9,8 @@ import com.customer.service.demo.repository.ServiceRepository;
 import com.customer.service.demo.service.ServicesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class ServicesServiceImplementation implements ServicesService {
         this.customerRepository = customerRepository;
     }
 
+    @CacheEvict(value = "services", allEntries = true)
     @Override
     public GenericResponse<Services> createService(Services service) {
         ServiceEntity serviceEntity = generateServiceEntity(service);
@@ -44,6 +47,7 @@ public class ServicesServiceImplementation implements ServicesService {
         }
     }
 
+    @Cacheable(value = "services")
     @Override
     public GenericResponse<List<Services>> getServices() {
         List<Services> services = this.serviceRepository.findAll() .stream()
@@ -52,6 +56,7 @@ public class ServicesServiceImplementation implements ServicesService {
         return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
     }
 
+    @CacheEvict(value = {"services", "services-customer"}, key = "#serviceId", allEntries = true)
     @Override
     public GenericResponse<Services> updateService(int serviceId, Services service) {
         Optional<ServiceEntity> serviceEntity = this.serviceRepository.findById(serviceId);
@@ -61,7 +66,7 @@ public class ServicesServiceImplementation implements ServicesService {
             value.setServiceDescription(service.getServicesDescription());
             try {
                 this.serviceRepository.save(value);
-                return new GenericResponse("service has been updated and stored in db", HttpStatus.CREATED);
+                return new GenericResponse("service has been updated and stored in db", HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 LOGS.error("error updating service");
                 LOGS.error(e.getMessage());
@@ -72,11 +77,12 @@ public class ServicesServiceImplementation implements ServicesService {
         }
     }
 
+    @CacheEvict(value = {"services", "services-customer"}, key = "#serviceId", allEntries = true)
     @Override
     public GenericResponse<Services> deleteService(int serviceId) {
         try {
             this.serviceRepository.deleteById(serviceId);
-            return new GenericResponse("service has been deleted from db", HttpStatus.ACCEPTED);
+            return new GenericResponse("service has been deleted from db", HttpStatus.NO_CONTENT);
         } catch (EmptyResultDataAccessException e) {
             return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -86,6 +92,7 @@ public class ServicesServiceImplementation implements ServicesService {
         }
     }
 
+    @Cacheable(value = "services-customer", key = "#customerId")
     @Override
     public GenericResponse<List<Services>> getCustomerServices(int customerId) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
@@ -97,9 +104,10 @@ public class ServicesServiceImplementation implements ServicesService {
             return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
         }
 
-        return new GenericResponse<List<Services>>("please check your customer/service id", HttpStatus.BAD_REQUEST);
+        return new GenericResponse<List<Services>>("please check your customer id", HttpStatus.BAD_REQUEST);
     }
 
+    @CacheEvict(cacheNames = {"services-customer"}, allEntries = true)
     @Override
     public GenericResponse<Services> addServiceToCustomer(int serviceId, int customerId) {
         Optional<ServiceEntity> serviceOptional = this.serviceRepository.findById(serviceId);
