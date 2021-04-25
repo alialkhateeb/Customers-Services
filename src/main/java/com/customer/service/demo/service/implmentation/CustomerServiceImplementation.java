@@ -1,7 +1,9 @@
 package com.customer.service.demo.service.implmentation;
 
 import com.customer.service.demo.dto.Customer;
-import com.customer.service.demo.dto.GenericResponse;
+import com.customer.service.demo.dto.response.EmptyBodyResponse;
+import com.customer.service.demo.dto.response.ResponseInterface;
+import com.customer.service.demo.dto.response.BodyResponse;
 import com.customer.service.demo.entity.CustomerEntity;
 import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.service.CustomerService;
@@ -31,16 +33,15 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @CacheEvict(value = {"customers"}, allEntries = true)
     @Override
-    public GenericResponse createCustomer(Customer customer) {
-
+    public ResponseInterface createCustomer(Customer customer) {
         CustomerEntity customerEntity = createCustomerEntity(customer);
         try {
             this.customerRepository.save(customerEntity);
-            return new GenericResponse("customer has been stored in db", HttpStatus.CREATED);
+            return new EmptyBodyResponse("customer has been stored in db", HttpStatus.CREATED);
         } catch (Exception e) {
             LOGS.error("error creating customer");
             LOGS.error(e.getMessage());
-            return new GenericResponse("Issue occured while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new EmptyBodyResponse("Issue occured while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
 
@@ -48,7 +49,7 @@ public class CustomerServiceImplementation implements CustomerService {
 
     @CacheEvict(value = {"customer", "customers", "services-customer"}, key = "#customerId", allEntries = true)
     @Override
-    public GenericResponse updateCustomer(int customerId, Customer customer) {
+    public ResponseInterface updateCustomer(int customerId, Customer customer) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
         if (customerOptional.isPresent()) {
             CustomerEntity customerEntity = customerOptional.get();
@@ -57,20 +58,20 @@ public class CustomerServiceImplementation implements CustomerService {
             customerEntity.setBirthday(customer.getDateOfBirth());
             try {
                 this.customerRepository.save(customerEntity);
-                return new GenericResponse("customer has been updated and stored in db", HttpStatus.NO_CONTENT);
+                return new EmptyBodyResponse("customer has been updated and stored in db", HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 LOGS.error("error updating customer");
                 LOGS.error(e.getMessage());
-                return new GenericResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new EmptyBodyResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
+            return new EmptyBodyResponse("customer does not exist", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Cacheable(value = "customer", key = "#customerId")
     @Override
-    public GenericResponse getCustomer(int customerId) {
+    public ResponseInterface getCustomer(int customerId) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
         if (customerOptional.isPresent()) {
             CustomerEntity customerEntity = customerOptional.get();
@@ -79,17 +80,17 @@ public class CustomerServiceImplementation implements CustomerService {
             customer.setLastName(customerEntity.getLastName());
             customer.setDateOfBirth(customerEntity.getBirthday());
             customer.setCustomerId(customerEntity.getCustomerId());
-            return new GenericResponse("customer successfully retrieved", HttpStatus.OK, customer);
+            return new BodyResponse<Customer>("customer successfully retrieved", HttpStatus.OK, customer);
         } else {
             LOGS.info("customer with this id" + customerId + "does not exist");
-            return new GenericResponse("invalid user id", HttpStatus.BAD_REQUEST);
+            return new EmptyBodyResponse("invalid user id", HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @Cacheable("customers")
     @Override
-    public GenericResponse<List<Customer>> getCustomers() {
+    public ResponseInterface getCustomers() {
         List<Customer> customers = this.customerRepository.findAll().stream().map(value -> {
             Customer customer = new Customer();
             customer.setFirstName(value.getFirstName());
@@ -98,23 +99,23 @@ public class CustomerServiceImplementation implements CustomerService {
             customer.setCustomerId(value.getCustomerId());
             return customer;
         }).collect(Collectors.toList());
-        return new GenericResponse<List<Customer>>("", HttpStatus.OK, customers);
+        return new BodyResponse<List<Customer>>("", HttpStatus.OK, customers);
     }
 
     @CacheEvict(value = {"customer", "customers", "services-customer"}, key = "#customerId", allEntries = true)
     @Override
-    public GenericResponse deleteCustomer(int customerId) {
+    public ResponseInterface deleteCustomer(int customerId) {
         try {
             this.customerRepository.deleteById(customerId);
-            return new GenericResponse("customer has been deleted", HttpStatus.NO_CONTENT);
+            return new EmptyBodyResponse("customer has been deleted", HttpStatus.NO_CONTENT);
         } catch (EmptyResultDataAccessException e) {
             LOGS.error("error deleting customer");
             LOGS.error(e.getMessage());
-            return new GenericResponse("customer does not exist", HttpStatus.BAD_REQUEST);
+            return new EmptyBodyResponse("customer does not exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOGS.error("error deleting customer 2");
             LOGS.error(e.getMessage());
-            return new GenericResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new EmptyBodyResponse("Issue occurred while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

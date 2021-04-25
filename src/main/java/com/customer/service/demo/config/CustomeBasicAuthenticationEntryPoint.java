@@ -1,6 +1,7 @@
 package com.customer.service.demo.config;
 
-import com.customer.service.demo.dto.GenericResponse;
+import com.customer.service.demo.dto.response.EmptyBodyResponse;
+import com.customer.service.demo.dto.response.ResponseInterface;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -23,7 +24,7 @@ public class CustomeBasicAuthenticationEntryPoint extends BasicAuthenticationEnt
         PrintWriter writer = response.getWriter();
         ObjectMapper mapper = new ObjectMapper();
 
-        GenericResponse jsonResponse = new GenericResponse(authEx.getMessage(), HttpStatus.UNAUTHORIZED);
+        ResponseInterface jsonResponse = new EmptyBodyResponse(authEx.getMessage(), HttpStatus.UNAUTHORIZED);
         writer.println(mapper.writeValueAsString(jsonResponse));
 
     }

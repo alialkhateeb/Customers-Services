@@ -1,7 +1,9 @@
 package com.customer.service.demo.service.implmentation;
 
-import com.customer.service.demo.dto.GenericResponse;
 import com.customer.service.demo.dto.Services;
+import com.customer.service.demo.dto.response.BodyResponse;
+import com.customer.service.demo.dto.response.EmptyBodyResponse;
+import com.customer.service.demo.dto.response.ResponseInterface;
 import com.customer.service.demo.entity.CustomerEntity;
 import com.customer.service.demo.entity.ServiceEntity;
 import com.customer.service.demo.repository.CustomerRepository;
@@ -35,30 +37,30 @@ public class ServicesServiceImplementation implements ServicesService {
 
     @CacheEvict(value = "services", allEntries = true)
     @Override
-    public GenericResponse<Services> createService(Services service) {
+    public ResponseInterface createService(Services service) {
         ServiceEntity serviceEntity = generateServiceEntity(service);
         try {
             this.serviceRepository.save(serviceEntity);
-            return new GenericResponse("service has been created and stored in db", HttpStatus.CREATED);
+            return new EmptyBodyResponse("service has been created and stored in db", HttpStatus.CREATED);
         } catch (Exception e) {
             LOGS.error("error creating customer");
             LOGS.error(e.getMessage());
-            return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new EmptyBodyResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Cacheable(value = "services")
     @Override
-    public GenericResponse<List<Services>> getServices() {
+    public ResponseInterface getServices() {
         List<Services> services = this.serviceRepository.findAll() .stream()
                 .map(value -> new Services(value.getServiceId(), value.getServiceName(), value.getServiceDescription()))
                 .collect(Collectors.toList());
-        return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
+        return new BodyResponse<>("", HttpStatus.OK, services);
     }
 
     @CacheEvict(value = {"services", "services-customer"}, key = "#serviceId", allEntries = true)
     @Override
-    public GenericResponse<Services> updateService(int serviceId, Services service) {
+    public ResponseInterface updateService(int serviceId, Services service) {
         Optional<ServiceEntity> serviceEntity = this.serviceRepository.findById(serviceId);
         if (serviceEntity.isPresent()) {
             ServiceEntity value = serviceEntity.get();
@@ -66,59 +68,59 @@ public class ServicesServiceImplementation implements ServicesService {
             value.setServiceDescription(service.getServicesDescription());
             try {
                 this.serviceRepository.save(value);
-                return new GenericResponse("service has been updated and stored in db", HttpStatus.NO_CONTENT);
+                return new EmptyBodyResponse("service has been updated and stored in db", HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 LOGS.error("error updating service");
                 LOGS.error(e.getMessage());
-                return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new EmptyBodyResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
+            return new EmptyBodyResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
         }
     }
 
     @CacheEvict(value = {"services", "services-customer"}, key = "#serviceId", allEntries = true)
     @Override
-    public GenericResponse<Services> deleteService(int serviceId) {
+    public ResponseInterface deleteService(int serviceId) {
         try {
             this.serviceRepository.deleteById(serviceId);
-            return new GenericResponse("service has been deleted from db", HttpStatus.NO_CONTENT);
+            return new EmptyBodyResponse("service has been deleted from db", HttpStatus.NO_CONTENT);
         } catch (EmptyResultDataAccessException e) {
-            return new GenericResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
+            return new EmptyBodyResponse("the provided service id does not exist", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOGS.error("error deleting service");
             LOGS.error(e.getMessage());
-            return new GenericResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new EmptyBodyResponse("Issue occurred while storing service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Cacheable(value = "services-customer", key = "#customerId")
     @Override
-    public GenericResponse<List<Services>> getCustomerServices(int customerId) {
+    public ResponseInterface getCustomerServices(int customerId) {
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
         if (customerOptional.isPresent()) {
             CustomerEntity customer = customerOptional.get();
             List<Services> services = customer.getServices().stream()
                     .map(value -> new Services(value.getServiceId(), value.getServiceName(), value.getServiceDescription()))
                     .collect(Collectors.toList());
-            return new GenericResponse<List<Services>>("", HttpStatus.OK, services);
+            return new BodyResponse("", HttpStatus.OK, services);
         }
 
-        return new GenericResponse<List<Services>>("please check your customer id", HttpStatus.BAD_REQUEST);
+        return new EmptyBodyResponse("please check your customer id", HttpStatus.BAD_REQUEST);
     }
 
     @CacheEvict(cacheNames = {"services-customer"}, allEntries = true)
     @Override
-    public GenericResponse<Services> addServiceToCustomer(int serviceId, int customerId) {
+    public ResponseInterface addServiceToCustomer(int serviceId, int customerId) {
         Optional<ServiceEntity> serviceOptional = this.serviceRepository.findById(serviceId);
         Optional<CustomerEntity> customerOptional = this.customerRepository.findById(customerId);
         if (customerOptional.isPresent() && serviceOptional.isPresent()) {
             CustomerEntity customer = customerOptional.get();
             customer.getServices().add(serviceOptional.get());
             this.customerRepository.save(customer);
-            return new GenericResponse<Services>("service has been added to customer", HttpStatus.ACCEPTED);
+            return new EmptyBodyResponse("service has been added to customer", HttpStatus.ACCEPTED);
         }
-        return new GenericResponse<Services>("please check your customer/service id", HttpStatus.BAD_REQUEST);
+        return new EmptyBodyResponse("please check your customer/service id", HttpStatus.BAD_REQUEST);
     }
 
     private ServiceEntity generateServiceEntity(Services service) {

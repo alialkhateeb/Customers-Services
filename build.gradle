@@ -20,9 +20,7 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	implementation 'junit:junit:4.12'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testCompile('org.junit.jupiter:junit-jupiter:5.4.0')
-	testCompile("org.mockito:mockito-inline:2.18.3")
+
 
 }
 

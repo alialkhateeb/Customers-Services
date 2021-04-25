@@ -1,22 +1,22 @@
 package com.customer.service.demo.service;
 
-import com.customer.service.demo.dto.GenericResponse;
-import com.customer.service.demo.dto.Services;
 
-import java.util.List;
+import com.customer.service.demo.dto.Services;
+import com.customer.service.demo.dto.response.ResponseInterface;
+
 
 public interface ServicesService {
 
-    GenericResponse<Services> createService(Services service);
+    ResponseInterface createService(Services service);
 
-    GenericResponse<List<Services>> getServices();
+    ResponseInterface getServices();
 
-    GenericResponse<Services> updateService(int serviceId, Services service);
+    ResponseInterface updateService(int serviceId, Services service);
 
-    GenericResponse<Services> deleteService(int serviceId);
+    ResponseInterface deleteService(int serviceId);
 
-    GenericResponse<List<Services>> getCustomerServices(int customerId);
+    ResponseInterface getCustomerServices(int customerId);
 
-    GenericResponse<Services> addServiceToCustomer(int serviceId, int customerId);
+    ResponseInterface addServiceToCustomer(int serviceId, int customerId);
 
 }
