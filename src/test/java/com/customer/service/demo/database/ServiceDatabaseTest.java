@@ -5,11 +5,13 @@ import com.customer.service.demo.entity.ServiceEntity;
 import com.customer.service.demo.repository.CustomerRepository;
 import com.customer.service.demo.repository.ServiceRepository;
 import org.junit.Test;
+//import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
@@ -31,12 +33,12 @@ public class ServiceDatabaseTest {
     private CustomerRepository customerRepository;
 
     @Test
-    public void add_service_without_customer() {
+    public void add_service() {
 
 
         ServiceEntity serviceEntity = generateServiceObject(
                 "add service", "this is adding new service w/o customer id",
-                new Timestamp(System.currentTimeMillis()), null);
+                new Timestamp(System.currentTimeMillis()));
 
         try {
             this.serviceRepository.save(serviceEntity);
@@ -48,147 +50,111 @@ public class ServiceDatabaseTest {
     }
 
     @Test
-    public void get_service_without_customer() {
-        ServiceEntity serviceEntity = generateServiceObject(
-                "get service 1", "getting new service after store it in database w/o customer",
-                new Timestamp(System.currentTimeMillis()), null);
-        try {
-            this.serviceRepository.save(serviceEntity);
-        } catch (Exception e) {
-            fail("failed to add service w/o customer, message = " + e.getMessage());
-        }
-        ServiceEntity retriveServiceEntity = this.serviceRepository.findById(serviceEntity.getServiceId()).get();
-        if (retriveServiceEntity.equals(serviceEntity)) {
-            assertTrue("services has been added and retrieved", true);
+    public void get_service() {
+        Optional<ServiceEntity> service = this.serviceRepository.findAll().stream().findFirst();
+        if (service.isPresent()) {
+            assertTrue("service has been retrieved", true);
         } else {
-            fail("retrieved services were not matched");
+            fail("no service were retrieved");
         }
     }
 
     @Test
-    public void update_service_without_customer() {
-        ServiceEntity serviceEntity = generateServiceObject(
-                "update service", "this is to update new service after storing in db w/o customer",
-                new Timestamp(System.currentTimeMillis()), null);
-        try {
-            this.serviceRepository.save(serviceEntity);
-        } catch (Exception e) {
-            fail("failed to add service w/o customer, message = " + e.getMessage());
-        }
+    public void update_service() {
 
-        ServiceEntity retriveServiceEntity = this.serviceRepository.findById(serviceEntity.getServiceId()).get();
-        retriveServiceEntity.setServiceName("update service 2");
-        serviceEntity.setServiceDescription("this is to update new service after storing in db w/o customer 2");
-        try {
-            this.serviceRepository.save(serviceEntity);
-        } catch (Exception e) {
-            fail("failed to add service w/o customer, message = " + e.getMessage());
-        }
-        if (serviceEntity.equals(retriveServiceEntity) &&
-                (!serviceEntity.getServiceName().equals(retriveServiceEntity.getServiceName())
-                        || !serviceEntity.getServiceDescription().equals(retriveServiceEntity.getServiceDescription()))
-        ) {
-            assertTrue("service were added and updated", true);
+        Optional<ServiceEntity> serviceOptional = this.serviceRepository.findAll().stream().findFirst();
+        if (serviceOptional.isPresent()) {
+            ServiceEntity service = serviceOptional.get();
+            service.setServiceName("update service");
+            service.setServiceDescription("this is updating service");
+            try {
+                this.serviceRepository.save(service);
+                assertTrue("service were updated", true);
+            } catch (Exception e) {
+                fail("failed to update service" + e.getMessage());
+            }
         } else {
-            fail("services were added but not updated");
+            fail("no service were found");
         }
-
     }
 
 
     @Test
-    public void delete_service_without_customer() {
-        ServiceEntity serviceEntity = generateServiceObject("delete service", "this is deleting the service after storing in db it w/o customer",
-                new Timestamp(System.currentTimeMillis()), null);
-        try {
-            this.serviceRepository.save(serviceEntity);
-        } catch (Exception e) {
-            fail("failed to add service w/o customer, message = " + e.getMessage());
+    public void delete_service() {
+        Optional<ServiceEntity> deleteService = this.serviceRepository.findAll().stream().findAny();
+        if (deleteService.isPresent()) {
+            this.serviceRepository.deleteById(deleteService.get().getServiceId());
+        } else {
+            fail("service were found but were not suppose to be found");
         }
-
-        Optional<ServiceEntity> deleteService = this.serviceRepository.findById(serviceEntity.getServiceId());
-
-        deleteService.ifPresent(removeServiceEntity -> {
-            this.serviceRepository.deleteById(removeServiceEntity.getServiceId());
-
-        });
-
-        deleteService = this.serviceRepository.findById(serviceEntity.getServiceId());
-        deleteService.ifPresentOrElse((serviceEntity1) -> {
-                    fail("service were found but were not suppose to be found");
-                },
-                () -> {
-                    assertTrue("service were added then deleted", true);
-                });
+        Optional<ServiceEntity> afterDeletion = this.serviceRepository.findById(deleteService.get().getServiceId());
+        if (afterDeletion.isEmpty()) {
+            assertTrue("the service has been deleted", true);
+        } else {
+            fail("the service were not deleted");
+        }
     }
 
     @Test
-    public void add_service_with_customer() {
-        CustomerEntity customerEntity = generateCustomerObject("ali", "alkhateeb",
-                LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
+    public void add_ten_services_add_three_customer() {
+        List<ServiceEntity> services = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            ServiceEntity service = generateServiceObject("Service " + i,
+                    "this is service " + i, new Date());
+            services.add(service);
+        }
+        List<CustomerEntity> customers = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            CustomerEntity customer = generateCustomerObject("Ali " + i, "Alkhateeb " + i,
+                    LocalDate.of(1900, 01, 01), new Date());
+            customers.add(customer);
+        }
+
         try {
-            this.customerRepository.save(customerEntity);
+            this.serviceRepository.saveAll(services);
+            this.customerRepository.saveAll(customers);
+            assertTrue("ten services were added and three customers were added", true);
         } catch (Exception e) {
-            fail("failed to add customer, message = " + e.getMessage());
+            fail("failed to add either services or customers");
         }
+    }
 
-        ServiceEntity serviceEntity = generateServiceObject("new service with customer",
-                "This object will contain new service with customer id",
-                new Timestamp(System.currentTimeMillis()),
-                customerEntity.getCustomerId());
-
-        try{
-            this.serviceRepository.save(serviceEntity);
-        }catch (Exception e){
-            fail("failed to add service with customer, message = " + e.getMessage());
-        }
-
-        Optional<ServiceEntity> retriveService = this.serviceRepository.findById(serviceEntity.getServiceId());
-        if (retriveService.isPresent() && (retriveService.get().getServiceId()== serviceEntity.getServiceId() && retriveService.get().getCustomerId().equals(customerEntity.getCustomerId()))){
-            //assert true
-            assertTrue("the service and the customer retrieved were matched", true);
+    @Test
+    public void map_services_to_single_customer() {
+        List<ServiceEntity> services = this.serviceRepository.findAll();
+        Optional<CustomerEntity> customerOptional = this.customerRepository.findAll().stream().findAny();
+        if (customerOptional.isPresent()) {
+            CustomerEntity customer = customerOptional.get();
+            customer.setServices(services);
+            try {
+                this.customerRepository.save(customer);
+                assertTrue("all services were added to a single customer", true);
+            } catch (Exception e) {
+                fail("were not able to add services to a single customer");
+            }
         }else{
-            //assert false
-            fail("there were no match in the services retrieved or the customer as well.");
+            fail("no customer were found");
         }
     }
 
     @Test
-    public void add_ten_services_with_one_customer() {
-        CustomerEntity customerEntity = generateCustomerObject("ali", "alkhateeb",
-                LocalDate.of(1999, 01, 01), new Timestamp(System.currentTimeMillis()));
-        try {
-            this.customerRepository.save(customerEntity);
-        } catch (Exception e) {
-            fail("failed to add customer, message = " + e.getMessage());
-        }
-        List<ServiceEntity> servicesEntities = new ArrayList<>();
-        for (int i = 1; i <= 10; i++){
-            ServiceEntity serviceEntity = generateServiceObject("new service with customer " + i,
-                    "This object will contain new service with customer id " + i ,
-                    new Timestamp(System.currentTimeMillis()),
-                    customerEntity.getCustomerId());
-            servicesEntities.add(serviceEntity);
-        }
-        try{
-            this.serviceRepository.saveAll(servicesEntities);
-        }catch (Exception e){
-            fail("failed to add service with customer, message = " + e.getMessage());
-        }
-        List<ServiceEntity> list = this.serviceRepository.findAllServicesByCustomerId(customerEntity.getCustomerId());
-        if (list.size() != servicesEntities.size()){
-
-            fail("the size of stored data are not equal the one received from db");
-        }
-        list.stream().forEach(value -> {
-            if (value.getCustomerId() != customerEntity.getCustomerId()){
-                System.err.println(value);
-                fail("there is a service that does not has a customer where it should have one");
+    public void map_same_services_to_two_customers(){
+        List<CustomerEntity> customers = this.customerRepository.findAll();
+        List<ServiceEntity> services = new ArrayList<>();
+        customers.stream().forEach(value -> {
+            if (value.getServices().size() > 0){
+                services.addAll(value.getServices());
+            }else{
+                value.setServices(services);
+                try {
+                    this.customerRepository.save(value);
+                }catch (Exception e){
+                    fail("error while adding services to customers");
+                }
             }
         });
+        assertTrue("services were added to all customers", true);
     }
-
-
 
 
     private CustomerEntity generateCustomerObject(String firstName, String lastName, LocalDate birthday, Date createdDate) {
@@ -200,12 +166,12 @@ public class ServiceDatabaseTest {
         return customerEntity;
     }
 
-    private ServiceEntity generateServiceObject(String serviceName, String serviceDesc, Date createdDate, Integer customerId) {
+    private ServiceEntity generateServiceObject(String serviceName, String serviceDesc, Date createdDate) {
         ServiceEntity serviceEntity = new ServiceEntity();
         serviceEntity.setServiceName(serviceName);
         serviceEntity.setServiceDescription(serviceDesc);
         serviceEntity.setServiceCreated(createdDate);
-        serviceEntity.setCustomerId(customerId);
         return serviceEntity;
     }
+
 }
