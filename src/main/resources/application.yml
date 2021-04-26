@@ -7,7 +7,7 @@
 #
 #  security:
 #    user:
-#      name: elm
+#      name: user
 #      password: SAeictcyguhpIDE9KayBGTGDkywaNR0Soph
 #  jpa:
 #    hibernate:
@@ -23,7 +23,7 @@ spring:
 
   security:
     user:
-      name: elm
+      name: user
       password: SAeictcyguhpIDE9KayBGTGDkywaNR0Soph
   jpa:
     hibernate:

@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://elm-mssql;databaseName=customer_service
+    url: jdbc:sqlserver://database-mssql;databaseName=customer_service
     username: sa
     password: 123QWEqwe
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   security:
     user:
-      name: elm
+      name: user
       password: SAeictcyguhpIDE9KayBGTGDkywaNR0Soph
   jpa:
     hibernate:

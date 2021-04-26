@@ -1,6 +1,9 @@
 package com.customer.service.demo.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,12 +17,15 @@ public class ServiceEntity {
     private int serviceId;
 
     @Column(name = "service_name")
+    @NotBlank(message = "Please provide a name to the given service")
     private String serviceName;
 
     @Column(name = "service_desciption")
+    @NotBlank(message = "Please provide description to the given service")
     private String serviceDescription;
 
     @Column(name = "service_created")
+    @CreationTimestamp
     private Date serviceCreated;
 
     @ManyToMany(fetch = FetchType.LAZY)

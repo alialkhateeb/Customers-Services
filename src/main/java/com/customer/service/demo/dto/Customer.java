@@ -1,12 +1,16 @@
 package com.customer.service.demo.dto;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 public class Customer {
 
     private int customerId;
+    @NotBlank(message = "Please provide first name")
     private String firstName;
+    @NotBlank(message = "Please provide last name")
     private String lastName;
+    @NotBlank(message = "Please provide date of birth")
     private LocalDate dateOfBirth;
 
     public int getCustomerId() {

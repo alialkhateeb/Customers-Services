@@ -34,7 +34,7 @@ public class CustomerServiceImplementation implements CustomerService {
     @CacheEvict(value = {"customers"}, allEntries = true)
     @Override
     public ResponseInterface createCustomer(Customer customer) {
-        CustomerEntity customerEntity = createCustomerEntity(customer);
+        CustomerEntity customerEntity = new CustomerEntity(customer.getFirstName(), customer.getLastName(), customer.getDateOfBirth());
         try {
             this.customerRepository.save(customerEntity);
             return new EmptyBodyResponse("customer has been stored in db", HttpStatus.CREATED);
@@ -42,9 +42,7 @@ public class CustomerServiceImplementation implements CustomerService {
             LOGS.error("error creating customer");
             LOGS.error(e.getMessage());
             return new EmptyBodyResponse("Issue occured while storing customer", HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
-
     }
 
     @CacheEvict(value = {"customer", "customers", "services-customer"}, key = "#customerId", allEntries = true)
@@ -119,12 +117,4 @@ public class CustomerServiceImplementation implements CustomerService {
         }
     }
 
-    private CustomerEntity createCustomerEntity(Customer customer) {
-        CustomerEntity customerEntity = new CustomerEntity();
-        customerEntity.setFirstName(customer.getFirstName());
-        customerEntity.setLastName(customer.getLastName());
-        customerEntity.setBirthday(customer.getDateOfBirth());
-        customerEntity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
-        return customerEntity;
-    }
 }

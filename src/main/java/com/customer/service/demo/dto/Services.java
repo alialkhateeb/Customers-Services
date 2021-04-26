@@ -1,9 +1,13 @@
 package com.customer.service.demo.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class Services {
 
     private int serviceId;
+    @NotBlank(message = "Please provide a service name")
     private String serviceName;
+    @NotBlank(message = "Please provide description of the service")
     private String servicesDescription;
 
     public Services(int serviceId, String serviceName, String servicesDescription) {

@@ -1,16 +1,16 @@
 version: "3.0"
 services:
-  elm-mssql:
+  database-mssql:
     image: mcr.microsoft.com/mssql/server
-    container_name: elm-mssql
+    container_name: database-mssql
     ports:
       - 1433:1433
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: 123QWEqwe
-  elm-test:
-    container_name: elm-test
-    image: elm-spring-ms
+  spring-app:
+    container_name: spring-app
+    image: spring-app
     restart: always
     environment:
       - SPRING_PROFILES_ACTIVE=ms

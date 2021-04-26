@@ -17,9 +17,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc'
+	implementation 'org.glassfish:javax.el:3.0.0'
 	runtimeOnly 'mysql:mysql-connector-java'
 	implementation 'junit:junit:4.12'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 
 }

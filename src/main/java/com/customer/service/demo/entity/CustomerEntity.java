@@ -1,5 +1,8 @@
 package com.customer.service.demo.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
@@ -24,6 +27,7 @@ public class CustomerEntity {
     private LocalDate birthday;
 
     @Column(name = "created_date")
+    @CreationTimestamp
     private Date createdDate;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -31,6 +35,11 @@ public class CustomerEntity {
             inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<ServiceEntity> services;
 
+    public CustomerEntity(String firstName, String lastName, LocalDate birthday) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+    }
 
     public int getCustomerId() {
         return customerId;
